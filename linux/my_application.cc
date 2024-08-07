@@ -14,6 +14,7 @@ struct _MyApplication
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+#define ICON_PATH "./hiddify.png"
 
 // Implements GApplication::activate.
 static void my_application_activate(GApplication *application)
@@ -21,6 +22,7 @@ static void my_application_activate(GApplication *application)
   MyApplication *self = MY_APPLICATION(application);
   GtkWindow *window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
+  gtk_window_set_icon_from_file(window, ICON_PATH, NULL);
 
   // Use a header bar when running in GNOME as this is the common style used
   // by applications and is the setup most users will be using (e.g. Ubuntu
@@ -48,6 +50,7 @@ static void my_application_activate(GApplication *application)
     gtk_header_bar_set_title(header_bar, "Hiddify");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
+    
   }
   else
   {
@@ -67,6 +70,7 @@ static void my_application_activate(GApplication *application)
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
 
   gtk_widget_grab_focus(GTK_WIDGET(view));
+  
 }
 
 // Implements GApplication::local_command_line.
@@ -133,6 +137,6 @@ MyApplication *my_application_new()
 {
   return MY_APPLICATION(g_object_new(my_application_get_type(),
                                      "application-id", APPLICATION_ID,
-                                     "flags", G_APPLICATION_NON_UNIQUE,
+                                     "flags", G_APPLICATION_FLAGS_NONE,
                                      nullptr));
 }

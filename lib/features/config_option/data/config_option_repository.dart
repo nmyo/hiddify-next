@@ -31,7 +31,10 @@ abstract class ConfigOptions {
     mapFrom: Region.values.byName,
     mapTo: (value) => value.name,
   );
-
+  static final useXrayCoreWhenPossible = PreferencesNotifier.create<bool, bool>(
+    "use-xray-core-when-possible",
+    false,
+  );
   static final blockAds = PreferencesNotifier.create<bool, bool>(
     "block-ads",
     false,
@@ -45,12 +48,12 @@ abstract class ConfigOptions {
 
   static final resolveDestination = PreferencesNotifier.create<bool, bool>(
     "resolve-destination",
-    true,
+    false,
   );
 
   static final ipv6Mode = PreferencesNotifier.create<IPv6Mode, String>(
     "ipv6-mode",
-    IPv6Mode.enable,
+    IPv6Mode.disable,
     mapFrom: (value) => IPv6Mode.values.firstWhere((e) => e.key == value),
     mapTo: (value) => value.key,
   );
@@ -58,6 +61,7 @@ abstract class ConfigOptions {
   static final remoteDnsAddress = PreferencesNotifier.create<String, String>(
     "remote-dns-address",
     "udp://1.1.1.1",
+    // "https://sky.rethinkdns.com/dns-query",
     validator: (value) => value.isNotBlank,
   );
 
@@ -102,7 +106,7 @@ abstract class ConfigOptions {
 
   static final tunImplementation = PreferencesNotifier.create<TunImplementation, String>(
     "tun-implementation",
-    TunImplementation.mixed,
+    TunImplementation.gvisor,
     mapFrom: TunImplementation.values.byName,
     mapTo: (value) => value.name,
   );
@@ -274,7 +278,7 @@ abstract class ConfigOptions {
   );
   static final warpNoiseMode = PreferencesNotifier.create<String, String>(
     "warp-noise-mode",
-    "m6",
+    "m4",
   );
 
   static final warpNoiseDelay = PreferencesNotifier.create<OptionalRange, String>(
@@ -328,6 +332,7 @@ abstract class ConfigOptions {
   static final Map<String, StateNotifierProvider<PreferencesNotifier, dynamic>> preferences = {
     "region": region,
     "block-ads": blockAds,
+    "use-xray-core-when-possible": useXrayCoreWhenPossible,
     "service-mode": serviceMode,
     "log-level": logLevel,
     "resolve-destination": resolveDestination,
@@ -431,6 +436,7 @@ abstract class ConfigOptions {
       return SingboxConfigOption(
         region: ref.watch(region).name,
         blockAds: ref.watch(blockAds),
+        useXrayCoreWhenPossible: ref.watch(useXrayCoreWhenPossible),
         executeConfigAsIs: false,
         logLevel: ref.watch(logLevel),
         resolveDestination: ref.watch(resolveDestination),
